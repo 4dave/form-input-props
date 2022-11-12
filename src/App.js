@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react"
 import "./App.css"
 import FormInput from "./FormInput"
-import { inputs, fields } from "./fields"
+import { inputprops } from "./inputs"
 
 function App() {
-  const [values, setValues] = useState(fields)
+  const [values, setValues] = useState({})
   const [message, setMessage] = useState("")
 
   const getData = async () => {
@@ -14,8 +14,6 @@ function App() {
     const data = await response.json()
     setValues(data.data[0])
   }
-
-  console.log(values)
 
   useEffect(() => {
     getData()
@@ -48,7 +46,7 @@ function App() {
   return (
     <div className="App">
       <h1>Contacts</h1>
-      {inputs.map((input) => (
+      {inputprops.map((input) => (
         <FormInput
           key={input.id}
           defaultValue={values && values[input.name]}

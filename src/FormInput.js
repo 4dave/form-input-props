@@ -1,5 +1,5 @@
 const FormInput = (props) => {
-  const { label, defaultValue, onChange, id, ...inputProps } = props
+  const { label, defaultValue, onChange, ...inputProps } = props
 
   return (
     <div>

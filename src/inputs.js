@@ -1,11 +1,4 @@
-export const fields = {
-  first_name: "",
-  last_name: "",
-  email: "",
-  phone: "",
-}
-
-export const inputs = [
+export const inputprops = [
   {
     id: 1,
     name: "first_name",
