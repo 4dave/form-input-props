@@ -1,25 +1,65 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react"
+import "./App.css"
+import FormInput from "./FormInput"
+import { inputs, fields } from "./fields"
 
 function App() {
+  const [values, setValues] = useState(fields)
+  const [message, setMessage] = useState("")
+
+  const getData = async () => {
+    const response = await fetch(
+      "https://go-crud-iommxd4b5q-uc.a.run.app/contacts"
+    )
+    const data = await response.json()
+    setValues(data.data[0])
+  }
+
+  console.log(values)
+
+  useEffect(() => {
+    getData()
+  }, [])
+
+  const onChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value })
+  }
+
+  const update = (id) => {
+    fetch(`https://go-crud-iommxd4b5q-uc.a.run.app/contacts/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    })
+    setMessage("Success!")
+  }
+
+  const showMessages = () => {
+    if (message) {
+      setTimeout(() => {
+        setMessage("")
+      }, 3000)
+      return <div className="message">{message}</div>
+    }
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Contacts</h1>
+      {inputs.map((input) => (
+        <FormInput
+          key={input.id}
+          defaultValue={values && values[input.name]}
+          onChange={onChange}
+          {...input}
+        />
+      ))}
+      <button onClick={() => update(values.ID)}>Submit</button>
+      {showMessages()}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
