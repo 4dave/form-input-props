@@ -8,30 +8,47 @@ function App() {
   const [message, setMessage] = useState("")
 
   const getData = async () => {
-    const response = await fetch(
-      "https://go-crud-iommxd4b5q-uc.a.run.app/contacts"
-    )
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/contacts`)
     const data = await response.json()
     setValues(data.data[0])
   }
 
   useEffect(() => {
     getData()
-  }, [])
+  }, [message])
 
   const onChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
   }
 
-  const update = (id) => {
-    fetch(`https://go-crud-iommxd4b5q-uc.a.run.app/contacts/${id}`, {
+  const update = async (id) => {
+    await fetch(`${process.env.REACT_APP_API_URL}/contacts/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(values),
     })
-    setMessage("Success!")
+    setMessage("Updated!")
+  }
+
+  const create = async () => {
+    await fetch(`${process.env.REACT_APP_API_URL}/contacts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    })
+    setMessage("Created!")
+  }
+
+  const remove = async (id) => {
+    await fetch(`${process.env.REACT_APP_API_URL}/contacts/${id}`, {
+      method: "DELETE",
+    }).then(() => {
+      setMessage("Deleted!")
+    })
   }
 
   const showMessages = () => {
@@ -54,7 +71,14 @@ function App() {
           {...input}
         />
       ))}
-      <button onClick={() => update(values.ID)}>Submit</button>
+      {values && values.ID ? (
+        <>
+          <button onClick={() => update(values.ID)}>Update</button>
+          <button onClick={() => remove(values.ID)}>Delete</button>
+        </>
+      ) : (
+        <button onClick={() => create(values)}>Save</button>
+      )}
       {showMessages()}
     </div>
   )
